@@ -19,7 +19,7 @@ public class StationTest{
         Reader reader = Files.newBufferedReader(Paths.get("src/main/resources/SubwayStations.json"));
 
         //when
-        Station station = gson.fromJson(reader, Station.class);
+        Stations station = gson.fromJson(reader, Stations.class);
 
         //then
         assertEquals("Astor Pl", station.features.get(0).properties.name);
