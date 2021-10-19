@@ -12,12 +12,28 @@ public class Station {
     public class Property{
         String name;
         String line;
+
+        public String[] parseLines()
+        {
+            return line.split("-");
+        }
     }
 
     public class Geometry{
         double[] coordinates;
+
+        public double getx()
+        {
+            return coordinates[0];
+        }
+
+        public double gety()
+        {
+            return coordinates[1];
+        }
     }
 
-    
+
+
 
 }
