@@ -12,6 +12,7 @@ public class Station {
     public class Property{
         String name;
         String line;
+        String objectid;
 
         public String[] parseLines()
         {
