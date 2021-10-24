@@ -5,9 +5,11 @@ import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class StationTest{
 
@@ -32,6 +34,22 @@ public class StationTest{
         assertEquals("6 Express", lines[2]);
         assertEquals("1", station.features.get(0).properties.objectid);
 
+    }
+
+    @Test
+    public void checkConnectingStations() throws IOException {
+        //given
+        Gson gson = new Gson();
+        Reader reader = Files.newBufferedReader(Paths.get("src/main/resources/SubwayStations.json"));
+        Stations stations = gson.fromJson(reader, Stations.class);
+
+        //when
+        List<String> connectingStations = stations.features.get(0).properties.getConnectingStations();
+
+        //then
+        assertEquals("Astor Pl", stations.features.get(0).properties.name);
+        assertTrue(connectingStations.contains("457"));
+        assertTrue(connectingStations.contains("105"));
     }
 
 }

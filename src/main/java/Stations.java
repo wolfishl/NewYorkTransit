@@ -37,7 +37,7 @@ public class Stations {
             {
                 for (Train each : lines.allTrains)
                 {
-                    if (each.name == train)
+                    if (each.name.equals(train))
                     {
                         addStations(connectionStations, each.stations);
                         break;
@@ -51,14 +51,19 @@ public class Stations {
         {
             for (int i = 0; i < train.size(); i++)
             {
-                if(train.get(i) == this.objectid)
+                if(train.get(i).equals(this.objectid))
                 {
                     if (i != 0) {
-                        stations.add(train.get(i-1));
+                        if (!stations.contains(train.get(i-1)))
+                        {
+                            stations.add(train.get(i-1));
+                        }
                     }
                     if(i != train.size()-1)
                     {
-                        stations.add(train.get(i+1));
+                        if (!stations.contains(train.get(i+1))) {
+                            stations.add(train.get(i + 1));
+                        }
                     }
                     break;
                 }
