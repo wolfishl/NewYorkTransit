@@ -9,7 +9,7 @@ import java.nio.file.Paths;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class LinesTest{
+public class SubwayLinesTest {
 
     @Test
     public void checkJson() throws IOException

@@ -11,7 +11,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class StationTest{
+public class StationsTest {
 
     @Test
     public void checkJson() throws IOException

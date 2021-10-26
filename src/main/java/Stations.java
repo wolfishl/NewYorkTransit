@@ -20,6 +20,7 @@ public class Stations {
         String name;
         String line;
         String objectid;
+        SubwayLines lines;
 
         public String[] parseLines()
         {
@@ -29,9 +30,11 @@ public class Stations {
         public List<String> getConnectingStations() throws IOException {
             String[] thisStationLines = this.parseLines();
             List<String> connectionStations =  new ArrayList<>();
-            Gson gson = new Gson();
-            Reader reader = Files.newBufferedReader(Paths.get("src/main/resources/SubwayLines.json"));
-            SubwayLines lines = gson.fromJson(reader, SubwayLines.class);
+            if (lines == null) {
+                Gson gson = new Gson();
+                Reader reader = Files.newBufferedReader(Paths.get("src/main/resources/SubwayLines.json"));
+                lines = gson.fromJson(reader, SubwayLines.class);
+            }
             lines.addToList();
             for(String train : thisStationLines)
             {
