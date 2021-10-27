@@ -3,4 +3,4 @@ out/
 .gradle/
 build/
 Subway Stations.pdf
-src/main/java/main.java
+src/Main/java/Main.java
