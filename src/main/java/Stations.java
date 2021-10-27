@@ -1,3 +1,10 @@
+import com.google.gson.Gson;
+
+import java.io.IOException;
+import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Stations {
@@ -13,10 +20,57 @@ public class Stations {
         String name;
         String line;
         String objectid;
+        SubwayLines lines;
 
         public String[] parseLines()
         {
             return line.split("-");
+        }
+
+        public List<String> getConnectingStations() throws IOException {
+            String[] thisStationLines = this.parseLines();
+            List<String> connectionStations =  new ArrayList<>();
+            if (lines == null) {
+                Gson gson = new Gson();
+                Reader reader = Files.newBufferedReader(Paths.get("src/main/resources/SubwayLines.json"));
+                lines = gson.fromJson(reader, SubwayLines.class);
+            }
+            lines.addToList();
+            for(String train : thisStationLines)
+            {
+                for (Train each : lines.allTrains)
+                {
+                    if (each.name.equals(train))
+                    {
+                        addStations(connectionStations, each.stations);
+                        break;
+                    }
+                }
+            }
+            return connectionStations;
+        }
+
+        public void addStations(List<String> stations, List<String> train)
+        {
+            for (int i = 0; i < train.size(); i++)
+            {
+                if(train.get(i).equals(this.objectid))
+                {
+                    if (i != 0) {
+                        if (!stations.contains(train.get(i-1)))
+                        {
+                            stations.add(train.get(i-1));
+                        }
+                    }
+                    if(i != train.size()-1)
+                    {
+                        if (!stations.contains(train.get(i+1))) {
+                            stations.add(train.get(i + 1));
+                        }
+                    }
+                    break;
+                }
+            }
         }
     }
 
