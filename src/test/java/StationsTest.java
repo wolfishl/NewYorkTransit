@@ -7,9 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class StationsTest {
 
@@ -28,11 +26,11 @@ public class StationsTest {
         assertEquals("4-6-6 Express", station.features.get(0).properties.line);
         assertEquals(-73.99106999861966, station.features.get(0).geometry.getx(), 0.01);
         assertEquals(40.73005400028978, station.features.get(0).geometry.gety(), 0.01);
-        String[] lines = station.features.get(0).properties.parseLines();
-        assertEquals("4", lines[0]);
-        assertEquals("6", lines[1]);
-        assertEquals("6 Express", lines[2]);
-        assertEquals("1", station.features.get(0).properties.objectid);
+        station.features.get(0).properties.parseLines();
+        assertEquals("4", station.features.get(0).properties.parsedLines[0]);
+        assertEquals("6", station.features.get(0).properties.parsedLines[1]);
+        assertEquals("6 Express", station.features.get(0).properties.parsedLines[2]);
+        assertEquals((Integer)1, station.features.get(0).properties.objectid);
 
     }
 
@@ -44,12 +42,14 @@ public class StationsTest {
         Stations stations = gson.fromJson(reader, Stations.class);
 
         //when
-        List<String> connectingStations = stations.features.get(0).properties.getConnectingStations();
+        stations.features.get(0).properties.getConnectingStations();
+        List<Integer> connectingStations = stations.features.get(0).properties.connectingStations;
 
         //then
         assertEquals("Astor Pl", stations.features.get(0).properties.name);
-        assertTrue(connectingStations.contains("457"));
-        assertTrue(connectingStations.contains("105"));
+        assertNotNull(connectingStations);
+        assertTrue(connectingStations.contains(457));
+        assertTrue(connectingStations.contains(105));
     }
 
 }

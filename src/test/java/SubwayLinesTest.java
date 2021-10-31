@@ -6,8 +6,7 @@ import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 public class SubwayLinesTest {
 
@@ -20,13 +19,14 @@ public class SubwayLinesTest {
 
         //when
         SubwayLines lines = gson.fromJson(reader, SubwayLines.class);
+        lines.addToList();
 
         //then
         assertNotNull(lines);
-        assertEquals("55", lines.A.get(0));
-        assertEquals("247", lines.Z.get(0));
-        assertEquals("29", lines.sixExpress.get(0));
-        assertEquals("25", lines.seven.get(0));
+        assertEquals((Integer)55, lines.A.get(0));
+        assertEquals((Integer)247, lines.Z.get(0));
+        assertEquals((Integer)29, lines.sixExpress.get(0));
+        assertEquals((Integer)25, lines.seven.get(0));
     }
 
 }

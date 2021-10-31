@@ -9,9 +9,9 @@ import java.util.List;
 
 public class Stations {
 
-    List<Feature> features;
+    List<Station> features;
 
-    public class Feature{
+    public class Station{
         Property properties;
         Geometry geometry;
     }
@@ -19,53 +19,58 @@ public class Stations {
     public class Property{
         String name;
         String line;
-        String objectid;
+        String[] parsedLines;
+        Integer objectid;
         SubwayLines lines;
+        List<Integer> connectingStations;
 
-        public String[] parseLines()
+        public void parseLines()
         {
-            return line.split("-");
+            parsedLines = line.split("-");
         }
 
-        public List<String> getConnectingStations() throws IOException {
-            String[] thisStationLines = this.parseLines();
-            List<String> connectionStations =  new ArrayList<>();
+        public void getConnectingStations() throws IOException {
+            this.parseLines();
+            String[] thisStationLines = parsedLines;
             if (lines == null) {
                 Gson gson = new Gson();
                 Reader reader = Files.newBufferedReader(Paths.get("src/main/resources/SubwayLines.json"));
                 lines = gson.fromJson(reader, SubwayLines.class);
             }
             lines.addToList();
+            if(connectingStations == null)
+            {
+                connectingStations = new ArrayList<>();
+            }
             for(String train : thisStationLines)
             {
                 for (Train each : lines.allTrains)
                 {
                     if (each.name.equals(train))
                     {
-                        addStations(connectionStations, each.stations);
+                        addStations(each.stations);
                         break;
                     }
                 }
             }
-            return connectionStations;
         }
 
-        public void addStations(List<String> stations, List<String> train)
+        private void addStations(List<Integer> trainStops)
         {
-            for (int i = 0; i < train.size(); i++)
+            for (int i = 0; i < trainStops.size(); i++)
             {
-                if(train.get(i).equals(this.objectid))
+                if(trainStops.get(i).equals(this.objectid))
                 {
                     if (i != 0) {
-                        if (!stations.contains(train.get(i-1)))
+                        if (!this.connectingStations.contains(trainStops.get(i-1)))
                         {
-                            stations.add(train.get(i-1));
+                            this.connectingStations.add(trainStops.get(i-1));
                         }
                     }
-                    if(i != train.size()-1)
+                    if(i != trainStops.size()-1)
                     {
-                        if (!stations.contains(train.get(i+1))) {
-                            stations.add(train.get(i + 1));
+                        if (!this.connectingStations.contains(trainStops.get(i+1))) {
+                            this.connectingStations.add(trainStops.get(i + 1));
                         }
                     }
                     break;
