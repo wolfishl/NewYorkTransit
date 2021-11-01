@@ -11,9 +11,16 @@ import static org.junit.Assert.*;
 
 public class StationsTest {
 
+    public Stations givenStations() throws IOException {
+        Gson gson = new Gson();
+        Reader reader = Files.newBufferedReader(Paths.get("src/main/resources/SubwayStations.json"));
+
+        Stations stations = gson.fromJson(reader, Stations.class);
+        return stations;
+    }
+
     @Test
-    public void checkJson() throws IOException
-    {
+    public void checkJson() throws IOException {
         //given
         Gson gson = new Gson();
         Reader reader = Files.newBufferedReader(Paths.get("src/main/resources/SubwayStations.json"));
@@ -30,16 +37,14 @@ public class StationsTest {
         assertEquals("4", station.features.get(0).properties.parsedLines[0]);
         assertEquals("6", station.features.get(0).properties.parsedLines[1]);
         assertEquals("6 Express", station.features.get(0).properties.parsedLines[2]);
-        assertEquals((Integer)1, station.features.get(0).properties.objectid);
+        assertEquals((Integer) 1, station.features.get(0).properties.objectid);
 
     }
 
     @Test
     public void checkConnectingStations() throws IOException {
         //given
-        Gson gson = new Gson();
-        Reader reader = Files.newBufferedReader(Paths.get("src/main/resources/SubwayStations.json"));
-        Stations stations = gson.fromJson(reader, Stations.class);
+        Stations stations = givenStations();
 
         //when
         stations.features.get(0).properties.getConnectingStations();
@@ -50,6 +55,38 @@ public class StationsTest {
         assertNotNull(connectingStations);
         assertTrue(connectingStations.contains(457));
         assertTrue(connectingStations.contains(105));
+    }
+
+    @Test
+    public void checkGetDistance() throws IOException {
+        //given
+        Stations stations = givenStations();
+        Stations.Geometry location1 = new Stations.Geometry(-73.99106999861966,40.73005400028978);
+        Stations.Geometry location2 = new Stations.Geometry(-5, 30);
+
+        //when
+        double distance1 = stations.features.get(0).geometry.getDistance(location1);
+        double distance2 = stations.features.get(0).geometry.getDistance(location2);
+
+        //then
+        assertEquals(0, distance1, 0.01);
+        assertEquals(69.82, distance2, 0.01);
+    }
+
+    @Test
+    public void checkGetNearestStation() throws IOException {
+        //given
+        Stations stations = givenStations();
+        Stations.Geometry location1 = new Stations.Geometry(-73.99106999861966,40.73005400028978);
+        Stations.Geometry location2 = new Stations.Geometry(-73.991062,40.73005);
+
+        //when
+        Stations.Station nearestStation1 = stations.getNearestStation(location1);
+        Stations.Station nearestStation2 = stations.getNearestStation(location2);
+
+        //then
+        assertEquals((Integer)1, nearestStation1.properties.objectid);
+        assertEquals((Integer)1, nearestStation2.properties.objectid);
     }
 
 }

@@ -11,9 +11,28 @@ public class Stations {
 
     List<Station> features;
 
+    public Station getNearestStation(Geometry location)
+    {
+        Station closest = this.features.get(0);
+        double shortestDistance = Integer.MAX_VALUE;
+        for(Station station : features)
+        {
+            double distance = station.geometry.getDistance(location);
+            if (distance < shortestDistance)
+            {
+                closest = station;
+                shortestDistance = distance;
+            }
+        }
+
+        return closest;
+    }
+
     public class Station{
         Property properties;
         Geometry geometry;
+
+
     }
 
     public class Property{
@@ -79,8 +98,13 @@ public class Stations {
         }
     }
 
-    public class Geometry{
+    public static class Geometry{
         double[] coordinates;
+
+        public Geometry(double x, double y)
+        {
+            coordinates = new double[]{x, y};
+        }
 
         public double getx()
         {
@@ -90,6 +114,14 @@ public class Stations {
         public double gety()
         {
             return coordinates[1];
+        }
+
+        public double getDistance(Geometry location)
+        {
+            double xs = (this.getx()-location.getx())*(this.getx()-location.getx());
+            double ys = (this.gety()-location.gety())*(this.gety()-location.gety());
+            double distance = Math.sqrt(xs+ys);
+            return distance;
         }
     }
 
