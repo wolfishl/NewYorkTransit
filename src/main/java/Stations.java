@@ -18,7 +18,7 @@ public class Stations {
         for(Station station : features)
         {
             double distance = station.geometry.getDistance(location);
-            if (distance < shortestDistance)
+            if (distance < shortestDistance) // what if same distance?
             {
                 closest = station;
                 shortestDistance = distance;
