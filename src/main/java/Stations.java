@@ -6,14 +6,45 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Stations {
 
     List<Station> features;
 
+    public Station findStation(int id)
+    {
+        System.out.println("got here");
+        Station returnStation = null;
+        for (Station station: features)
+        {
+            if ((int)station.properties.objectid == id)
+            {
+                returnStation = station;
+                break;
+            }
+        }
+        return returnStation;
+    }
+
     public class Station{
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Station station = (Station) o;
+            return Objects.equals(properties, station.properties) && Objects.equals(geometry, station.geometry);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(properties, geometry);
+        }
+
         Property properties;
         Geometry geometry;
+
     }
 
     public class Property{
@@ -22,7 +53,7 @@ public class Stations {
         String[] parsedLines;
         Integer objectid;
         SubwayLines lines;
-        List<Integer> connectingStations;
+        List<Station> connectingStations;
 
         public void parseLines()
         {
@@ -38,9 +69,9 @@ public class Stations {
                 lines = gson.fromJson(reader, SubwayLines.class);
             }
             lines.addToList();
-            if(connectingStations == null)
+            if(this.connectingStations == null)
             {
-                connectingStations = new ArrayList<>();
+                this.connectingStations = new ArrayList<>();
             }
             for(String train : thisStationLines)
             {
@@ -57,6 +88,7 @@ public class Stations {
 
         private void addStations(List<Integer> trainStops)
         {
+            System.out.println("this station id: " + this.objectid);
             for (int i = 0; i < trainStops.size(); i++)
             {
                 if(trainStops.get(i).equals(this.objectid))
@@ -64,13 +96,14 @@ public class Stations {
                     if (i != 0) {
                         if (!this.connectingStations.contains(trainStops.get(i-1)))
                         {
-                            this.connectingStations.add(trainStops.get(i-1));
+                            this.connectingStations.add(findStation(trainStops.get(i-1)));
                         }
                     }
                     if(i != trainStops.size()-1)
                     {
-                        if (!this.connectingStations.contains(trainStops.get(i+1))) {
-                            this.connectingStations.add(trainStops.get(i + 1));
+                        if (!this.connectingStations.contains(trainStops.get(i+1)))
+                        {
+                            this.connectingStations.add(findStation(trainStops.get(i + 1)));
                         }
                     }
                     break;
