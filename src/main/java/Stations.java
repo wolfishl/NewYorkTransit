@@ -14,16 +14,14 @@ public class Stations {
 
     public Station findStation(int id)
     {
-        Station returnStation = null;
         for (Station station: features)
         {
             if ((int)station.properties.objectid == id)
             {
-                returnStation = station;
-                break;
+                return station;
             }
         }
-        return returnStation;
+        return null;
     }
 
     public class Station{
@@ -50,7 +48,7 @@ public class Stations {
         String name;
         String line;
         String[] parsedLines;
-        Integer objectid;
+        int objectid;
         SubwayLines lines;
         List<Station> connectingStations;
 

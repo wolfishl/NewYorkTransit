@@ -30,7 +30,7 @@ public class StationsTest {
         assertEquals("4", station.features.get(0).properties.parsedLines[0]);
         assertEquals("6", station.features.get(0).properties.parsedLines[1]);
         assertEquals("6 Express", station.features.get(0).properties.parsedLines[2]);
-        assertEquals((Integer)1, station.features.get(0).properties.objectid);
+        assertEquals(1, station.features.get(0).properties.objectid);
 
     }
 
