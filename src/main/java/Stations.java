@@ -7,10 +7,22 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.PriorityQueue;
 
 public class Stations {
 
     List<Station> features;
+
+    public List<Station> findShortestPath(Station startingStation, Station endingStation) throws IOException {
+        startingStation.properties.getConnectingStations();
+        PriorityQueue<Path> paths = new PriorityQueue<>();
+        paths.add(new Path(startingStation));
+        for (Station potentialStation :startingStation.properties.connectingStations)
+        {
+            potentialStation.properties.getConnectingStations();
+
+        }
+    }
 
     public Station findStation(int id)
     {
@@ -27,6 +39,10 @@ public class Stations {
     }
 
     public class Station{
+        Property properties;
+        Geometry geometry;
+        boolean checked;
+        Path path;
 
         @Override
         public boolean equals(Object o) {
@@ -41,8 +57,6 @@ public class Stations {
             return Objects.hash(properties, geometry);
         }
 
-        Property properties;
-        Geometry geometry;
 
     }
 
