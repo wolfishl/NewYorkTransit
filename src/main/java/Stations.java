@@ -14,7 +14,6 @@ public class Stations {
 
     public Station findStation(int id)
     {
-        System.out.println("got here");
         Station returnStation = null;
         for (Station station: features)
         {
@@ -88,7 +87,6 @@ public class Stations {
 
         private void addStations(List<Integer> trainStops)
         {
-            System.out.println("this station id: " + this.objectid);
             for (int i = 0; i < trainStops.size(); i++)
             {
                 if(trainStops.get(i).equals(this.objectid))
