@@ -1,9 +1,12 @@
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class Path {
+public class Path{
     List<Stations.Station> stationsOnPath;
     int length;
+   // Stations.Station lastStation = stationsOnPath.get(stationsOnPath.size()-1);
 
     public Path(Stations.Station station)
     {
@@ -15,7 +18,12 @@ public class Path {
     public Path(List<Stations.Station> oldPath)
     {
         stationsOnPath = oldPath;
-        length = stationsOnPath.size();
+        length = stationsOnPath.size()-1;
+    }
+
+    public Path(int maxLength)
+    {
+        length = maxLength;
     }
 
     public void addToPath(Stations.Station station)
@@ -30,5 +38,6 @@ public class Path {
         newPath.addToPath(station);
         return newPath;
     }
+
 
 }

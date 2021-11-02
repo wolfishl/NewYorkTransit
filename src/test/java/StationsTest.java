@@ -42,14 +42,28 @@ public class StationsTest {
         Stations stations = gson.fromJson(reader, Stations.class);
 
         //when
-        stations.features.get(0).properties.getConnectingStations();
+        stations.features.get(0).properties.getConnectingStations(stations);
         List<Stations.Station> connectingStations = stations.features.get(0).properties.connectingStations;
 
         //then
         assertEquals("Astor Pl", stations.features.get(0).properties.name);
         assertNotNull(connectingStations);
-       // assertTrue(connectingStations.contains(stations.findStation(457)));
-       // assertTrue(connectingStations.contains(105));
+        assertTrue(connectingStations.contains(stations.findStation(457)));
+        assertTrue(connectingStations.contains(stations.findStation(105)));
+    }
+
+    @Test
+    public void checkShortestPath() throws IOException {
+        //given
+        Gson gson = new Gson();
+        Reader reader = Files.newBufferedReader(Paths.get("src/main/resources/SubwayStations.json"));
+        Stations stations = gson.fromJson(reader, Stations.class);
+
+        //when
+        Path path = stations.findShortestPath(stations.findStation(55), stations.findStation(186));
+
+        //then
+        assertEquals(1, path.length);
     }
 
 }

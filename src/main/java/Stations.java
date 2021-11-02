@@ -4,45 +4,83 @@ import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.PriorityQueue;
+import java.util.*;
 
 public class Stations {
 
     List<Station> features;
+    
 
-    public List<Station> findShortestPath(Station startingStation, Station endingStation) throws IOException {
-        startingStation.properties.getConnectingStations();
-        PriorityQueue<Path> paths = new PriorityQueue<>();
-        paths.add(new Path(startingStation));
-        for (Station potentialStation :startingStation.properties.connectingStations)
+    public Path findShortestPath(Station startingStation, Station endingStation) throws IOException
+    {
+        Path shortestPath = new Path(Integer.MAX_VALUE);
+        startingStation.shortestPath = new Path(startingStation);
+
+        // create priority queue
+        PriorityQueue<Station> stationsToCheck = new PriorityQueue<Station>(new PathComparator());
+        stationsToCheck.add(startingStation);
+
+        // begin searching
+        while (stationsToCheck.peek() != null)
         {
-            potentialStation.properties.getConnectingStations();
+            Station currentStation = stationsToCheck.poll();
+            currentStation.properties.getConnectingStations(this);
+            currentStation.checked = true;
 
+            // check if is ending station
+            if (currentStation.properties.objectid == endingStation.properties.objectid)
+            {
+                shortestPath = currentStation.shortestPath;
+                break;
+            }
+
+            // add connecting stations to queue
+            for (Station nextStation : currentStation.properties.connectingStations)
+            {
+                if (nextStation.checked != null)
+                {
+                    continue;
+                }
+
+                //check if already has path
+                if (nextStation.shortestPath != null)
+                {
+                    //is on queue
+                    Path potentialPath = currentStation.shortestPath.addStationToNewPath(nextStation);
+                    if (potentialPath.length < nextStation.shortestPath.length)
+                    {
+                        nextStation.shortestPath = potentialPath;
+                    }
+                }
+                else
+                {
+                    nextStation.shortestPath = currentStation.shortestPath.addStationToNewPath(nextStation);
+                    stationsToCheck.add(nextStation);
+                }
+
+
+            }
         }
+        return shortestPath;
     }
 
     public Station findStation(int id)
     {
-        Station returnStation = null;
         for (Station station: features)
         {
             if ((int)station.properties.objectid == id)
             {
-                returnStation = station;
-                break;
+                return station;
             }
         }
-        return returnStation;
+        return null;
     }
 
     public class Station{
         Property properties;
         Geometry geometry;
-        boolean checked;
-        Path path;
+        Boolean checked;
+        Path shortestPath;
 
         @Override
         public boolean equals(Object o) {
