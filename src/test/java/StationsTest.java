@@ -42,7 +42,7 @@ public class StationsTest {
         Stations stations = gson.fromJson(reader, Stations.class);
 
         //when
-        stations.features.get(0).properties.getConnectingStations();
+        stations.features.get(0).properties.getConnectingStations(stations);
         List<Stations.Station> connectingStations = stations.features.get(0).properties.connectingStations;
 
         //then
