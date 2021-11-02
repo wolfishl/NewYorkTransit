@@ -73,7 +73,7 @@ public class Stations {
             parsedLines = line.split("-");
         }
 
-        public void getConnectingStations() throws IOException {
+        public void getConnectingStations(Stations stations) throws IOException {
             this.parseLines();
             String[] thisStationLines = parsedLines;
             if (lines == null) {
@@ -92,14 +92,14 @@ public class Stations {
                 {
                     if (each.name.equals(train))
                     {
-                        addStations(each.stations);
+                        addStations(each.stations, stations);
                         break;
                     }
                 }
             }
         }
 
-        private void addStations(List<Integer> trainStops)
+        private void addStations(List<Integer> trainStops, Stations stations)
         {
             for (int i = 0; i < trainStops.size(); i++)
             {
@@ -108,14 +108,14 @@ public class Stations {
                     if (i != 0) {
                         if (!this.connectingStations.contains(trainStops.get(i-1)))
                         {
-                            this.connectingStations.add(findStation(trainStops.get(i-1)));
+                            this.connectingStations.add(stations.findStation(trainStops.get(i-1)));
                         }
                     }
                     if(i != trainStops.size()-1)
                     {
                         if (!this.connectingStations.contains(trainStops.get(i+1)))
                         {
-                            this.connectingStations.add(findStation(trainStops.get(i + 1)));
+                            this.connectingStations.add(stations.findStation(trainStops.get(i + 1)));
                         }
                     }
                     break;
