@@ -13,12 +13,32 @@ public class Stations {
 
     public Path findShortestPath(Station startingStation, Station endingStation) throws IOException
     {
-        Path shortestPath = new Path(Integer.MAX_VALUE);
-        startingStation.shortestPath = new Path(startingStation);
+        Path shortestPath = null;
 
         // create priority queue
-        PriorityQueue<Station> stationsToCheck = new PriorityQueue<Station>(new PathComparator());
-        stationsToCheck.add(startingStation);
+        PriorityQueue<Station> stationsToCheck = new PriorityQueue<>(new PathComparator());
+        Iterator<Station> iterator = stationsToCheck.iterator();
+        for (Station station : this.features)
+        {
+            station.checked = false;
+
+            // starting station
+            if (station.properties.objectid == startingStation.properties.objectid)
+            {
+                station.shortestPath = 0;
+                station.stationsOnPath = new ArrayList<>();
+                station.stationsOnPath.add(station);
+                stationsToCheck.add(startingStation);
+            }
+
+            // other stations
+            else
+            {
+                station.shortestPath = Integer.MAX_VALUE;
+                station.stationsOnPath = new ArrayList<>();
+                stationsToCheck.add(station);
+            }
+        }
 
         // begin searching
         while (stationsToCheck.peek() != null)
@@ -27,37 +47,46 @@ public class Stations {
             currentStation.properties.getConnectingStations(this);
             currentStation.checked = true;
 
+
             // check if is ending station
-            if (currentStation.properties.objectid == endingStation.properties.objectid)
+            if (currentStation.equals(endingStation))
             {
-                shortestPath = currentStation.shortestPath;
+                shortestPath = new Path(currentStation.shortestPath, currentStation.stationsOnPath);
                 break;
             }
 
-            // add connecting stations to queue
+            // add values to connecting stations on queue
             for (Station nextStation : currentStation.properties.connectingStations)
             {
-                if (nextStation.checked != null)
+                if (nextStation.checked)
                 {
                     continue;
                 }
 
-                //check if already has path
-                if (nextStation.shortestPath != null)
-                {
-                    //is on queue
-                    Path potentialPath = currentStation.shortestPath.addStationToNewPath(nextStation);
-                    if (potentialPath.length < nextStation.shortestPath.length)
-                    {
-                        nextStation.shortestPath = potentialPath;
-                    }
-                }
+
+                //check if path is shorter
                 else
                 {
-                    nextStation.shortestPath = currentStation.shortestPath.addStationToNewPath(nextStation);
-                    stationsToCheck.add(nextStation);
+                    for (Station stationInQueue : stationsToCheck)
+                    {
+                        if (stationInQueue.equals(nextStation))
+                        {
+                            if (stationInQueue.shortestPath > currentStation.shortestPath + 1)
+                            {
+                                stationsToCheck.remove(stationInQueue);
+                                nextStation.shortestPath = currentStation.shortestPath + 1;
+                                nextStation.stationsOnPath = new ArrayList<>();
+                                for (Station eachStation : currentStation.stationsOnPath)
+                                {
+                                    nextStation.stationsOnPath.add(eachStation);
+                                }
+                                nextStation.stationsOnPath.add(nextStation);
+                                stationsToCheck.add(nextStation);
+                            }
+                            break;
+                        }
+                    }
                 }
-
 
             }
         }
@@ -80,19 +109,27 @@ public class Stations {
         Property properties;
         Geometry geometry;
         Boolean checked;
-        Path shortestPath;
+        int shortestPath;
+        List<Station> stationsOnPath;
+
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Station station = (Station) o;
-            return Objects.equals(properties, station.properties) && Objects.equals(geometry, station.geometry);
+            if (o == null || !(o instanceof Station))
+            {
+                return false;
+            }
+            Station otherStation = (Station) o;
+            if(this.properties.objectid == otherStation.properties.objectid)
+            {
+                return true;
+            }
+            else return false;
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(properties, geometry);
+            return Objects.hash(properties.objectid);
         }
 
 
@@ -144,16 +181,18 @@ public class Stations {
                 if(trainStops.get(i).equals(this.objectid))
                 {
                     if (i != 0) {
-                        if (!this.connectingStations.contains(trainStops.get(i-1)))
+                        Station previousStation = stations.findStation(trainStops.get(i-1));
+                        if (!this.connectingStations.contains(previousStation))
                         {
-                            this.connectingStations.add(stations.findStation(trainStops.get(i-1)));
+                            this.connectingStations.add(previousStation);
                         }
                     }
                     if(i != trainStops.size()-1)
                     {
-                        if (!this.connectingStations.contains(trainStops.get(i+1)))
+                        Station nextStation = stations.findStation(trainStops.get(i + 1));
+                        if (!this.connectingStations.contains(nextStation))
                         {
-                            this.connectingStations.add(stations.findStation(trainStops.get(i + 1)));
+                            this.connectingStations.add(nextStation);
                         }
                     }
                     break;

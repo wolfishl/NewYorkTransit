@@ -60,9 +60,11 @@ public class StationsTest {
         Stations stations = gson.fromJson(reader, Stations.class);
 
         //when
+        Path path1 = stations.findShortestPath(stations.findStation(32), stations.findStation(105));
         Path path = stations.findShortestPath(stations.findStation(55), stations.findStation(186));
 
         //then
+        assertEquals(2, path1.length);
         assertEquals(1, path.length);
     }
 
