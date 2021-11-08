@@ -10,6 +10,13 @@ public class Stations {
 
     List<Station> features;
 
+    public Path findRoute(Geometry startingLocation, Geometry endingLocation) throws IOException {
+        Station startingStation = getNearestStation(startingLocation);
+        Station endingStation = getNearestStation(endingLocation);
+        return findShortestPath(startingStation, endingStation);
+    }
+
+
 
     public Path findShortestPath(Station startingStation, Station endingStation) throws IOException
     {
