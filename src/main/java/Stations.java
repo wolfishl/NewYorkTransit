@@ -29,7 +29,7 @@ public class Stations {
             station.checked = false;
 
             // starting station
-            if (station.properties.objectid == startingStation.properties.objectid)
+            if (station.equals(startingStation))
             {
                 station.shortestPath = 0;
                 station.stationsOnPath = new ArrayList<>();
