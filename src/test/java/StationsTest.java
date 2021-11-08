@@ -47,7 +47,7 @@ public class StationsTest {
         Stations stations = givenStations();
 
         //when
-        stations.features.get(0).properties.getConnectingStations(stations);
+        stations.features.get(0).properties.findConnectingStations(stations);
         List<Stations.Station> connectingStations = stations.features.get(0).properties.connectingStations;
 
         //then
@@ -64,11 +64,13 @@ public class StationsTest {
 
         //when
         Path path1 = stations.findShortestPath(stations.findStation(32), stations.findStation(105));
-        Path path = stations.findShortestPath(stations.findStation(55), stations.findStation(186));
+        Path path2 = stations.findShortestPath(stations.findStation(55), stations.findStation(186));
+        Path path3 = stations.findShortestPath(stations.findStation(12), stations.findStation(302));
 
         //then
         assertEquals(2, path1.length);
-        assertEquals(1, path.length);
+        assertEquals(1, path2.length);
+        assertEquals(5, path3.length);
     }
 
     @Test

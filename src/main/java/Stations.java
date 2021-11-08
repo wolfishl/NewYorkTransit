@@ -24,7 +24,6 @@ public class Stations {
 
         // create priority queue
         PriorityQueue<Station> stationsToCheck = new PriorityQueue<>(new PathComparator());
-        Iterator<Station> iterator = stationsToCheck.iterator();
         for (Station station : this.features)
         {
             station.checked = false;
@@ -51,7 +50,7 @@ public class Stations {
         while (stationsToCheck.peek() != null)
         {
             Station currentStation = stationsToCheck.poll();
-            currentStation.properties.getConnectingStations(this);
+            currentStation.properties.findConnectingStations(this);
             currentStation.checked = true;
 
 
@@ -169,7 +168,7 @@ public class Stations {
             parsedLines = line.split("-");
         }
 
-        public void getConnectingStations(Stations stations) throws IOException {
+        public void findConnectingStations(Stations stations) throws IOException {
             this.parseLines();
             String[] thisStationLines = parsedLines;
             if (lines == null) {
