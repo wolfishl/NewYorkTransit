@@ -58,19 +58,51 @@ public class StationsTest {
     }
 
     @Test
-    public void checkShortestPath() throws IOException {
+    public void checkShortestPath_one() throws IOException {
         //given
         Stations stations = givenStations();
 
         //when
-        Path path1 = stations.findShortestPath(stations.findStation(32), stations.findStation(105));
-        Path path2 = stations.findShortestPath(stations.findStation(55), stations.findStation(186));
-        Path path3 = stations.findShortestPath(stations.findStation(12), stations.findStation(302));
+        Path path = stations.findShortestPath(stations.findStation(55), stations.findStation(186));
 
         //then
-        assertEquals(2, path1.length);
-        assertEquals(1, path2.length);
-        assertEquals(5, path3.length);
+        assertEquals(1, path.length);
+        //add checking stations
+    }
+
+    @Test
+    public void checkShortestPath_two() throws IOException {
+        //given
+        Stations stations = givenStations();
+
+        //when
+        Path path = stations.findShortestPath(stations.findStation(32), stations.findStation(105));
+
+        //then
+        assertEquals(2, path.length);
+        assertEquals(stations.findStation(32), path.stationsOnPath.get(0));
+        assertEquals(stations.findStation(31), path.stationsOnPath.get(1));
+        assertEquals(stations.findStation(105), path.stationsOnPath.get(2));
+    }
+
+    @Test
+    public void checkShortestPath_three() throws IOException {
+        //given
+        Stations stations = givenStations();
+
+        //when
+        Path path = stations.findShortestPath(stations.findStation(12), stations.findStation(302));
+
+        //then
+        assertEquals(5, path.length);
+        assertEquals(stations.findStation(12), path.stationsOnPath.get(0));
+        assertEquals(stations.findStation(224), path.stationsOnPath.get(1));
+        assertEquals(stations.findStation(35), path.stationsOnPath.get(2));
+        assertEquals(stations.findStation(301), path.stationsOnPath.get(3));
+        assertEquals(stations.findStation(373), path.stationsOnPath.get(4));
+        assertEquals(stations.findStation(302), path.stationsOnPath.get(5));
+
+        //add stations
     }
 
     @Test
