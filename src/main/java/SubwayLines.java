@@ -23,8 +23,8 @@ public class SubwayLines {
     List<Integer> P;
     List<Integer> Q;
     List<Integer> R;
-    List<Integer> S;
-    List<Integer> T;
+//    List<Integer> S;
+//    List<Integer> T;
     List<Integer> U;
     List<Integer> V;
     List<Integer> W;
@@ -70,8 +70,8 @@ public class SubwayLines {
         allTrains.add(new Train(P, "P"));
         allTrains.add(new Train(Q, "Q"));
         allTrains.add(new Train(R, "R"));
-        allTrains.add(new Train(S, "S"));
-        allTrains.add(new Train(T, "T"));
+//        allTrains.add(new Train(S, "S"));
+//        allTrains.add(new Train(T, "T"));
         allTrains.add(new Train(U, "U"));
         allTrains.add(new Train(V, "V"));
         allTrains.add(new Train(W, "W"));

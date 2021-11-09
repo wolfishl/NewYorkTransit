@@ -47,14 +47,62 @@ public class StationsTest {
         Stations stations = givenStations();
 
         //when
-        stations.features.get(0).properties.getConnectingStations();
-        List<Integer> connectingStations = stations.features.get(0).properties.connectingStations;
+        stations.features.get(0).properties.findConnectingStations(stations);
+        List<Stations.Station> connectingStations = stations.features.get(0).properties.connectingStations;
 
         //then
         assertEquals("Astor Pl", stations.features.get(0).properties.name);
         assertNotNull(connectingStations);
-        assertTrue(connectingStations.contains(457));
-        assertTrue(connectingStations.contains(105));
+        assertTrue(connectingStations.contains(stations.findStation(457)));
+        assertTrue(connectingStations.contains(stations.findStation(105)));
+    }
+
+    @Test
+    public void checkShortestPath_one() throws IOException {
+        //given
+        Stations stations = givenStations();
+
+        //when
+        Path path = stations.findShortestPath(stations.findStation(55), stations.findStation(186));
+
+        //then
+        assertEquals(1, path.length);
+        //add checking stations
+    }
+
+    @Test
+    public void checkShortestPath_two() throws IOException {
+        //given
+        Stations stations = givenStations();
+
+        //when
+        Path path = stations.findShortestPath(stations.findStation(32), stations.findStation(105));
+
+        //then
+        assertEquals(2, path.length);
+        assertEquals(stations.findStation(32), path.stationsOnPath.get(0));
+        assertEquals(stations.findStation(31), path.stationsOnPath.get(1));
+        assertEquals(stations.findStation(105), path.stationsOnPath.get(2));
+    }
+
+    @Test
+    public void checkShortestPath_three() throws IOException {
+        //given
+        Stations stations = givenStations();
+
+        //when
+        Path path = stations.findShortestPath(stations.findStation(12), stations.findStation(302));
+
+        //then
+        assertEquals(5, path.length);
+        assertEquals(stations.findStation(12), path.stationsOnPath.get(0));
+        assertEquals(stations.findStation(224), path.stationsOnPath.get(1));
+        assertEquals(stations.findStation(35), path.stationsOnPath.get(2));
+        assertEquals(stations.findStation(301), path.stationsOnPath.get(3));
+        assertEquals(stations.findStation(373), path.stationsOnPath.get(4));
+        assertEquals(stations.findStation(302), path.stationsOnPath.get(5));
+
+        //add stations
     }
 
     @Test
@@ -89,4 +137,20 @@ public class StationsTest {
         assertEquals((Integer)1, nearestStation2.properties.objectid);
     }
 
+
+    @Test
+    public void checkFindRoute() throws IOException{
+        //given
+        Stations stations = givenStations();
+        Stations.Geometry starting = new Stations.Geometry(-73.99106999861966,40.73005400028978);
+        Stations.Geometry ending = new Stations.Geometry(-73.989958,40.734673000996125);
+
+        //when
+        Path route = stations.findRoute(starting, ending);
+
+        //then
+        assertEquals(stations.findStation(1), route.stationsOnPath.get(0));
+        assertEquals(stations.findStation(105), route.stationsOnPath.get(1));
+        assertEquals(1, route.length);
+    }
 }
